@@ -18,6 +18,7 @@ library(ggcorrplot)
 library(ggridges)
 library(cowplot)
 library(RColorBrewer)
+library(car)
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
 #
@@ -49,7 +50,7 @@ whoRegionCodes <- read_csv('data/whoRegionCodes.csv')
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
 #
-#   Data Cleaning
+#   Data Wrangling/Cleaning
 #
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
 # Check for missing data/gauge how clean the datasets are
@@ -337,24 +338,41 @@ worldHealthStatModel <- worldHealthStat %>%
   filter(Sex == "Female" | Sex == "Male")
 
 # Run a Multiple Linear Regression to predict Life Expectancy
-fit1 <- lm(LifeExp ~ Sex + DocPer10k + NurseMidwifePer10k +
+modelLifeExp <- lm(LifeExp ~ Sex + DocPer10k + NurseMidwifePer10k +
              DentistPer10k + PharmacistPer10k + UhcCoverage, data = worldHealthStatModel)
 
 # Check regression model performance
-summary(fit1)
+summary(modelLifeExp)
 
-# check if there was any multicollinearity
-library(car)
-vif(fit1)
+# Want to check if assumptions were violated
+# Check if there was any multicollinearity
+vif(modelLifeExp)
 
-# assumptions check
-resids<-fit1$residuals; fitvals<-fit1$fitted.values
-ggplot()+geom_point(aes(fitvals,resids))+
-  geom_hline(yintercept=0, col="red")
+# Pull out the residuals and fitted values from the model
+resids<-modelLifeExp$residuals
+fitvals<-modelLifeExp$fitted.values
 
-#Assumption check of Normality
-ggplot()+geom_histogram(aes(resids),bins=15)
+# Residuals vs Fitted, checking assumption of linearity and homoskedasticity
+ggplot() + 
+  geom_point(aes(fitvals,resids))+
+  geom_hline(yintercept=0, col="red") +
+  xlab("Fitted Values") +
+  ylab("Residuals") +
+  ggtitle("Residuals vs. Fitted")
+  
 
-ggplot()+geom_qq(aes(sample=resids))+geom_qq_line(aes(sample=resids), color='red')
-
+# Check assumption of Normality
+# Histogram
+ggplot() +
+  geom_histogram(aes(resids),bins=20) +
+  xlab("Residuals") +
+  ylab("Count") +
+  ggtitle("Histogram of Residuals")
+# Q-Q Plot
+ggplot() + 
+  geom_qq(aes(sample=resids)) + 
+  geom_qq_line(aes(sample=resids), color='red') +
+  xlab("Theorectical Quantiles") +
+  ylab("Sample Quantiles") +
+  ggtitle("Q-Q Plot")
 
