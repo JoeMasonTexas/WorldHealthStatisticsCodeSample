@@ -42,7 +42,7 @@ dentistPer10k <- read_csv("data/Dentists.csv")
 # Pharmacists per 10000 population
 pharmacistPer10k <- read_csv("data/Pharmacists.csv")
 
-# UHC index pf service Coverage (SCI)
+# UHC index of service Coverage (SCI)
 uhcCoverage <- read_csv("data/uhcCoverage.csv")
 
 # I handmade this .csv file myself from the information at https://www.who.int/about/who-we-are/regional-offices

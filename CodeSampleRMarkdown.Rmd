@@ -60,7 +60,7 @@ dentistPer10k <- read_csv("data/Dentists.csv")
 # Pharmacists per 10000 population
 pharmacistPer10k <- read_csv("data/Pharmacists.csv")
 
-# UHC index pf service Coverage (SCI)
+# UHC index of service Coverage (SCI)
 uhcCoverage <- read_csv("data/uhcCoverage.csv")
 
 # I handmade this .csv file myself from the information at https://www.who.int/about/who-we-are/regional-offices
@@ -70,7 +70,6 @@ whoRegionCodes <- read_csv('data/whoRegionCodes.csv')
 
 ## Data Wrangling/Cleaning
 This section is focused on looking at what data is available, specifically what years the health data was recorded by the WHO. The WHO does not track metrics yearly for each country, so there are often several year gaps between available data. Therefore, it's important to have an understanding of what data is available between the datasets.
-\  
 
 #### Life expectancy at birth by sex/country
 ```{r, message=FALSE, warning=FALSE}
@@ -282,7 +281,7 @@ HealthCorr <- round(cor(corrData),2)
 ggcorrplot(HealthCorr, hc.order = TRUE, lab = TRUE) +
   ggtitle("Correlation Plot for WHO World Health Statistics Variables")
 ```
-The correlation plots shows that the numeric variables have strong, positive linear relationships with each other.
+The correlation plot shows that the numeric variables have strong, positive linear relationships with each other.
 
 ## Plotting Data
 
@@ -372,7 +371,7 @@ The multiple regression model is significant and can explain 76.89% of the varia
 # Check if there was any multicollinearity
 vif(modelLifeExp)
 ```
-The multiple regression model is based on some overall assumptions about the data used. While the Variance Inflation Factor values were below the standard cutoff of 5, based on the regressor t-tests it is likely that there is some multicollinearity between the predictors. 
+The multiple regression model is based on some overall assumptions about the data used. While the Variance Inflation Factor values were below the standard cutoff of 5, based on the non-significant regressor t-tests it is likely that there is some multicollinearity between the predictors. 
 ```{r, message=FALSE, warning=FALSE}
 # Pull out the residuals and fitted values from the model
 resids<-modelLifeExp$residuals
